@@ -1,14 +1,11 @@
 import { Segment } from "semantic-ui-react";
 import "./App.css";
-import FormProduto from "./views/produto/FormProduto";
-import FormEntregador from "./views/Entregador/FormEntregador";
-import FormCliente from "./views/cliente/FormCliente";
+import Rotas from "./Rotas";
+
 function App() {
   return (
     <>
-      <FormCliente />
-      <FormProduto />
-      <FormEntregador />
+        <Rotas />
       <div style={{ marginTop: "6%" }}>
         <Segment vertical color="grey" size="tiny" textAlign="center">
           &copy; 2023 - Projeto WEB III - IFPE Jaboatão dos Guararapes
