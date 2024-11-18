@@ -1,14 +1,14 @@
 import axios from "axios";
 import { default as React, useState } from "react";
 import InputMask from "react-input-mask";
+
 import {
   Button,
   Container,
   Divider,
-  Dropdown,
   Form,
   Icon,
-  Radio,
+  Radio
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
@@ -19,16 +19,16 @@ function FormEntregador() {
   const [dataNascimento, setDataNascimento] = useState("");
   const [foneCelular, setFoneCelular] = useState("");
   const [foneFixo, setFoneFixo] = useState("");
-  const [qtEntregasRealizadas, setQtEntregasRealizadas] = useState(0);
-  const [valorFrete, setValorFrete] = useState(0.0);
+  const [qtEntregasRealizadas, setQtEntregasRealizadas] = useState();
+  const [valorFrete, setValorFrete] = useState();
   const [enderecoRua, setEnderecoRua] = useState("");
   const [enderecoNumero, setEnderecoNumero] = useState("");
   const [enderecoBairro, setEnderecoBairro] = useState("");
   const [enderecoCidade, setEnderecoCidade] = useState("");
   const [enderecoCep, setEnderecoCep] = useState("");
-  const [enderecoUf, setEnderecoUf] = useState([]);
+  const [enderecoUf, setEnderecoUf] = useState();
   const [enderecoComplemento, setEnderecoComplemento] = useState("");
-  const [ativo, setAtivo] = useState(false); // Valor booleano
+  const [ativo, setAtivo] = useState(true); // Valor booleano
 
   function salvar() {
     let entregadorRequest = {
@@ -49,6 +49,9 @@ function FormEntregador() {
       enderecoUf: enderecoUf,
       ativo: ativo,
     };
+
+console.log(entregadorRequest)
+
     axios
       .post("http://localhost:8080/api/entregador", entregadorRequest)
       .then((response) => {
@@ -59,9 +62,9 @@ function FormEntregador() {
       });
   }
 
-  const options = [
-    { key: "ativo", value: "Ativo", text: "Ativo" },
-    { key: " Não ativo", value: " Não ativo", text: " Não ativo" },
+  const ufList = [
+    { key: "PE", value: "PE", text: "PE" },
+    { key: "SP", value: "SP", text: " SP" },
   ];
 
   return (
@@ -131,6 +134,7 @@ function FormEntregador() {
                     fluid
                     width={10}
                     label="Fone Fixo"
+                      mask="(99) 9999.9999"
                     value={foneFixo}
                     onChange={(e) => setFoneFixo(e.target.value)}
                   ></Form.Input>
@@ -188,17 +192,19 @@ function FormEntregador() {
                     onChange={(e) => setEnderecoCep(e.target.value)}
                   ></Form.Input>
                 </Form.Group>
-                <label>UF</label>
-                <Dropdown
-                  placeholder="Select"
-                  fluid
-                  multiple
-                  selection
-                  label="UF"
-                  options={options}
-                  value={enderecoUf}
-                  onChange={(e, { value }) => setEnderecoUf(value)}
-                />
+                <Form.Select
+                fluid
+                label= "UF"
+                options={ufList}
+                placeholder="Selecione"
+                value={enderecoUf}
+                onChange={(e,{value})=>{
+                  setEnderecoUf(value)
+                }}
+
+                >
+                </Form.Select>
+          
                 <Form.Group>
                   <Form.Input
                     fluid
@@ -214,12 +220,14 @@ function FormEntregador() {
                     label="Sim"
                     style={{ marginRight: "10px" }}
                     value="sim"
-                    onChange={(e, { value }) => setAtivo(value)}
+                    checked={ativo}
+                    onChange={e => setAtivo(true)}
                   />
                   <Radio
                     label="Não"
                     value="não"
-                    onChange={(e, { value }) => setAtivo(value)}
+                     checked={!ativo}
+                    onChange={e => setAtivo(false)}
                   />
                 </Form.Group>
               </Form>
