@@ -1,6 +1,7 @@
 import axios from "axios";
 import { default as React, useState } from "react";
 import InputMask from "react-input-mask";
+import { Link } from "react-router-dom";
 
 import {
   Button,
@@ -8,7 +9,7 @@ import {
   Divider,
   Form,
   Icon,
-  Radio
+  Radio,
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
@@ -50,7 +51,7 @@ function FormEntregador() {
       ativo: ativo,
     };
 
-console.log(entregadorRequest)
+    console.log(entregadorRequest);
 
     axios
       .post("http://localhost:8080/api/entregador", entregadorRequest)
@@ -134,7 +135,7 @@ console.log(entregadorRequest)
                     fluid
                     width={10}
                     label="Fone Fixo"
-                      mask="(99) 9999.9999"
+                    mask="(99) 9999.9999"
                     value={foneFixo}
                     onChange={(e) => setFoneFixo(e.target.value)}
                   ></Form.Input>
@@ -193,18 +194,16 @@ console.log(entregadorRequest)
                   ></Form.Input>
                 </Form.Group>
                 <Form.Select
-                fluid
-                label= "UF"
-                options={ufList}
-                placeholder="Selecione"
-                value={enderecoUf}
-                onChange={(e,{value})=>{
-                  setEnderecoUf(value)
-                }}
+                  fluid
+                  label="UF"
+                  options={ufList}
+                  placeholder="Selecione"
+                  value={enderecoUf}
+                  onChange={(e, { value }) => {
+                    setEnderecoUf(value);
+                  }}
+                ></Form.Select>
 
-                >
-                </Form.Select>
-          
                 <Form.Group>
                   <Form.Input
                     fluid
@@ -221,13 +220,13 @@ console.log(entregadorRequest)
                     style={{ marginRight: "10px" }}
                     value="sim"
                     checked={ativo}
-                    onChange={e => setAtivo(true)}
+                    onChange={(e) => setAtivo(true)}
                   />
                   <Radio
                     label="Não"
                     value="não"
-                     checked={!ativo}
-                    onChange={e => setAtivo(false)}
+                    checked={!ativo}
+                    onChange={(e) => setAtivo(false)}
                   />
                 </Form.Group>
               </Form>
@@ -242,7 +241,7 @@ console.log(entregadorRequest)
                   color="orange"
                 >
                   <Icon name="reply" />
-                  Voltar
+                  <Link to={"/list-entregador"}>Voltar</Link>
                 </Button>
 
                 <Button
