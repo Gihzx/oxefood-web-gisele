@@ -5,6 +5,7 @@ import { Button, Container, Divider, Icon, Table } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
 export default function ListEntregador() {
+
   const [lista, setLista] = useState([]);
 
   useEffect(() => {
@@ -95,12 +96,12 @@ export default function ListEntregador() {
                       <Button
                         inverted
                         circular
-                        color="green"
-                        title="Clique aqui para editar os dados deste cliente"
-                        icon
-                      >
-                        <Icon name="edit" />
-                      </Button>{" "}
+                        color='green'
+                        title='Clique aqui para editar os dados deste cliente'
+                        icon>
+                        <Link to="/form-entregador" state={{ id: entregador.id }} style={{ color: 'green' }}> <Icon name='edit' /> </Link>
+                      </Button> &nbsp;
+
                       &nbsp;
                       <Button
                         inverted

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { default as React, useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputMask from "react-input-mask";
-import { Link } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
 import {
   Button,
   Container,
@@ -14,6 +13,7 @@ import {
 import MenuSistema from "../../MenuSistema";
 
 function FormEntregador() {
+
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [rg, setRg] = useState("");
@@ -29,7 +29,35 @@ function FormEntregador() {
   const [enderecoCep, setEnderecoCep] = useState("");
   const [enderecoUf, setEnderecoUf] = useState();
   const [enderecoComplemento, setEnderecoComplemento] = useState("");
-  const [ativo, setAtivo] = useState(true); // Valor booleano
+  const [ativo, setAtivo] = useState(true);
+
+  const { state } = useLocation();
+  const [idEntregador, setIdEntregador] = useState();
+
+  useEffect(() => {
+
+    if (state != null && state.id != null) {
+      axios.get("http://localhost:8080/api/entregador/" + state.id)
+        .then((response) => {
+          setIdEntregador(response.data.id)
+          setNome(response.data.nome)
+          setCpf(response.data.cpf)
+          setDataNascimento(formatarData(response.data.dataNascimento))
+          setFoneCelular(response.data.foneCelular)
+          setFoneFixo(response.data.foneFixo)
+          setQtEntregasRealizadas(response.data.qtEntregasRealizadas)
+          setValorFrete(response.data.valorFrete)
+          setEnderecoRua(response.data.enderecoRua)
+          setEnderecoNumero(response.data.enderecoNumero)
+          setEnderecoBairro(response.data.enderecoBairro)
+          setEnderecoCidade(response.data.enderecoCidade)
+          setEnderecoCep(response.data.enderecoCep)
+          setEnderecoUf(response.data.enderecoUf)
+          setEnderecoComplemento(response.data.enderecoComplemento)
+          setAtivo(response.data.ativo)
+        })
+    }
+  }, [state])
 
   function salvar() {
     let entregadorRequest = {
@@ -53,14 +81,26 @@ function FormEntregador() {
 
     console.log(entregadorRequest);
 
-    axios
-      .post("http://localhost:8080/api/entregador", entregadorRequest)
-      .then((response) => {
-        console.log("entregador cadastrado");
-      })
-      .catch((error) => {
-        console.log("erro ao cadastrar o entregador");
-      });
+
+    if (idEntregador != null) { //Alteração:
+      axios.put("http://localhost:8080/api/entregador/" + idEntregador, entregadorRequest)
+        .then((response) => { console.log('Entregador alterado com sucesso.') })
+        .catch((error) => { console.log('Erro ao alter um cliente.') })
+    } else { //Cadastro:
+      axios.post("http://localhost:8080/api/entregador", entregadorRequest)
+        .then((response) => { console.log('Entregador cadastrado com sucesso.') })
+        .catch((error) => { console.log('Erro ao incluir o cliente.') })
+    }
+
+  }
+
+  function formatarData(dataParam) {
+    if (dataParam === null || dataParam === "" || dataParam === undefined) {
+      return "";
+    }
+
+    let arrayData = dataParam.split("-");
+    return arrayData[2] + "/" + arrayData[1] + "/" + arrayData[0];
   }
 
   const ufList = [
@@ -74,14 +114,13 @@ function FormEntregador() {
       <div>
         <div style={{ marginTop: "3%" }}>
           <Container textAlign="justified">
-            <h2>
-              {" "}
-              <span style={{ color: "darkgray" }}>
-                Entregador&nbsp;
-                <Icon name="angle double right" size="small" />{" "}
-              </span>{" "}
-              Cadastro{" "}
-            </h2>
+            {idEntregador === undefined &&
+              <h2> <span style={{ color: 'darkgray' }}> Entregador &nbsp;<Icon name='angle double right' size="small" /> </span> Cadastro</h2>
+            }
+            {idEntregador != undefined &&
+              <h2> <span style={{ color: 'darkgray' }}> Entregador &nbsp;<Icon name='angle double right' size="small" /> </span> Alteração</h2>
+            }
+
 
             <Divider />
 
