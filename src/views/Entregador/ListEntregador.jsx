@@ -51,9 +51,9 @@ async function remover() {
 }
 
 
-async function visualizar(id) {
+async function visualizar() {
 
-  await axios.get("http://localhost:8080/api/cliente")
+  await axios.get("http://localhost:8080/api/cliente" + idRemover)
       .then((response) => {
           setLista(response.data)
       })
