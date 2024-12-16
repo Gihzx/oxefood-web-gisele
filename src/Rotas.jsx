@@ -7,6 +7,7 @@ import Home from "./views/home/Home";
 import ListEntregador from "./views/Entregador/ListEntregador";
 import ListProduto from "./views/produto/ListProduto";
 import FormProduto from "./views/produto/FormProduto";
+import FormCategoria from "./views/categoria/FormCategoria";
 
 function Rotas() {
   return (
@@ -19,6 +20,7 @@ function Rotas() {
         <Route path="list-cliente" element={<ListCliente />} />
         <Route path="list-entregador" element={<ListEntregador />} />
         <Route path="list-produto" element={<ListProduto />} />
+        <Route path="form-categoria" element={<FormCategoria />} />
       </Routes>
     </>
   );
