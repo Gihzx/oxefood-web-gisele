@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import InputMask from "react-input-mask";
 import { Link, useLocation } from "react-router-dom";
+import { notifyError, notifySuccess } from '../../views/util/Util';
 import {
   Button,
   Container,
@@ -88,8 +89,15 @@ function FormEntregador() {
         .catch((error) => { console.log('Erro ao alter um cliente.') })
     } else { //Cadastro:
       axios.post("http://localhost:8080/api/entregador", entregadorRequest)
-        .then((response) => { console.log('Entregador cadastrado com sucesso.') })
-        .catch((error) => { console.log('Erro ao incluir o cliente.') })
+        .then((response) => { notifySuccess('Cliente cadastrado com sucesso.')})
+        .catch((error) => {if (error.response.data.errors != undefined) {
+          for (let i = 0; i < error.response.data.errors.length; i++) {
+            notifyError(error.response.data.errors[i].defaultMessage)
+       }
+ } else {
+   notifyError(error.response.data.message)
+ }
+})
     }
 
   }

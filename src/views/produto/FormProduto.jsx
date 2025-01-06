@@ -8,6 +8,7 @@ import {
   TextArea,
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
+import { notifyError, notifySuccess } from '../../views/util/Util';
 import { useState } from "react";
 import axios from "axios";
 function FormProduto() {
@@ -31,10 +32,18 @@ function FormProduto() {
     axios
       .post("http://localhost:8080/api/produto ", produtoRequest)
       .then((response) => {
-        console.log("Produto cadastrado");
+        notifySuccess('Cliente cadastrado com sucesso.')
+
       })
       .catch((error) => {
-        console.log("erro ao solicitar pproduto");
+        if (error.response.data.errors != undefined) {
+          for (let i = 0; i < error.response.data.errors.length; i++) {
+            notifyError(error.response.data.errors[i].defaultMessage)
+       }
+ } else {
+   notifyError(error.response.data.message)
+ }
+
       });
   }
 
