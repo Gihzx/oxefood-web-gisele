@@ -9,6 +9,7 @@ import {
   Icon,
   Modal,
   Table,
+  Menu,
 } from "semantic-ui-react";
 import MenuSistema from "../../MenuSistema";
 
@@ -16,6 +17,12 @@ export default function ListCliente() {
   const [lista, setLista] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [idRemover, setIdRemover] = useState();
+  const [menuFiltro, setMenuFiltro] = useState();
+  const [codigo, setCodigo] = useState();
+  const [titulo, setTitulo] = useState();
+  const [idCategoria, setIdCategoria] = useState();
+  const [listaCategoriaProduto, setListaCategoriaProduto] = useState([]);
+
 
   useEffect(() => {
     carregarLista();
@@ -25,6 +32,20 @@ export default function ListCliente() {
     axios.get("http://localhost:8080/api/produto").then((response) => {
       setLista(response.data);
     });
+    
+    axios.get("http://localhost:8080/api/categoriaproduto")
+    .then((response) => {
+
+        const dropDownCategorias = [];
+        dropDownCategorias.push({ text: '', value: '' });
+        response.data.map(c => (
+            dropDownCategorias.push({ text: c.descricao, value: c.id })
+        ))
+
+        setListaCategoriaProduto(dropDownCategorias)
+     
+    })
+
   }
   function formatarData(dataParam) {
     if (dataParam === null || dataParam === "" || dataParam === undefined) {
@@ -54,7 +75,51 @@ export default function ListCliente() {
       });
     setOpenModal(false);
   }
+  function handleMenuFiltro() {
 
+    if (menuFiltro === true) {
+        setMenuFiltro(false);
+    } else {
+        setMenuFiltro(true);
+    }
+}
+
+function handleChangeCodigo(value) {
+
+    filtrarProdutos(value, titulo, idCategoria);
+}
+
+function handleChangeTitulo(value) {
+
+    filtrarProdutos(codigo, value, idCategoria);
+}
+
+function handleChangeCategoriaProduto(value) {
+
+    filtrarProdutos(codigo, titulo, value);
+}
+async function filtrarProdutos(codigoParam, tituloParam, idCategoriaParam) {
+
+  let formData = new FormData();
+
+  if (codigoParam !== undefined) {
+      setCodigo(codigoParam)
+      formData.append('codigo', codigoParam);
+  }
+  if (tituloParam !== undefined) {
+      setTitulo(tituloParam)
+      formData.append('titulo', tituloParam);
+  }
+  if (idCategoriaParam !== undefined) {
+      setIdCategoria(idCategoriaParam)
+      formData.append('idCategoria', idCategoriaParam);
+  }
+
+  await axios.post("http://localhost:8080/api/produto/filtrar", formData)
+  .then((response) => {
+    setListaCategoriaProduto(response.data)
+  })
+}
   return (
     <div>
       <MenuSistema tela={"produto"} />
@@ -62,6 +127,17 @@ export default function ListCliente() {
         <Container textAlign="justified">
           <h2> Produto </h2>
           <Divider />
+          <Menu compact>
+                               <Menu.Item
+                                   name='menuFiltro'
+                                   active={menuFiltro === true}
+                                   onClick={() => handleMenuFiltro()}
+                               >
+                                   <Icon name='filter' />
+                                   Filtrar
+                               </Menu.Item>
+                           </Menu>
+
 
           <div style={{ marginTop: "4%" }}>
             <Button
